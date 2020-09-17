@@ -1,0 +1,65 @@
+diff --git a/autoload/nim.vim b/autoload/nim.vim
+index c1fdc9d..6ff1ca3 100644
+--- a/autoload/nim.vim
++++ b/autoload/nim.vim
+@@ -9,11 +9,12 @@ if !executable('nim')
+   echoerr "the Nim compiler must be in your system's PATH"
+ endif
+ 
+-if has("python3")
+-  exe 'py3file ' . fnameescape(s:plugin_path) . '/nim_vim.py'
+-elseif has("python")
+-  exe 'pyfile ' . fnameescape(s:plugin_path) . '/nim_vim.py'
+-endif
++exe 'pyfile ' . fnameescape(s:plugin_path) . '/nim_vim.py'
++"if has("python3")
++"  exe 'py3file ' . fnameescape(s:plugin_path) . '/nim_vim.py'
++"elseif has("python")
++"  exe 'pyfile ' . fnameescape(s:plugin_path) . '/nim_vim.py'
++"endif
+ 
+ fun! nim#init()
+   let cmd = printf("nim --dump.format:json --verbosity:0 dump %s", s:CurrentNimFile())
+@@ -22,7 +23,7 @@ fun! nim#init()
+     let false = 0 " Needed for eval of json
+     let true = 1 " Needed for eval of json
+     let dumpdata = eval(substitute(raw_dumpdata, "\n", "", "g"))
+-    
++
+     let b:nim_project_root = dumpdata['project_path']
+     let b:nim_defined_symbols = dumpdata['defined_symbols']
+     let b:nim_caas_enabled = g:nim_caas_enabled || index(dumpdata['defined_symbols'], 'forcecaas') != -1
+@@ -71,7 +72,7 @@ command! NimRestartService
+ fun! s:CurrentNimFile()
+   let save_cur = getpos('.')
+   call cursor(0, 0, 0)
+-  
++
+   let PATTERN = "\\v^\\#\\s*included from \\zs.*\\ze"
+   let l = search(PATTERN, "n")
+ 
+@@ -199,13 +200,13 @@ fun! GotoDefinition_nim_ready(def_output)
+     " echoerr a:def_output
+     return 0
+   endif
+-  
++
+   let rawDef = matchstr(a:def_output, 'def\t\([^\n]*\)')
+   if rawDef == ""
+     echo "the current cursor position does not match any definitions"
+     return 0
+   endif
+-  
++
+   let defBits = split(rawDef, '\t')
+   let file = defBits[4]
+   let line = defBits[5]
+@@ -225,7 +226,7 @@ endf
+ fun! SyntaxCheckers_nim_nim_GetLocList()
+   let makeprg = 'nim check --hints:off --listfullpaths ' . s:CurrentNimFile()
+   let errorformat = &errorformat
+-  
++
+   return SyntasticMake({ 'makeprg': makeprg, 'errorformat': errorformat })
+ endf
+ 
