@@ -1,16 +1,12 @@
 call plug#begin()
 " Nim
-" Plug 'alaviss/nim.nvim'
-Plug 'zah/nim.vim'
-"
-" Plug 'autozimu/LanguageClient-neovim', {
-"     \ 'branch': 'next',
-"     \ 'do': 'bash install.sh',
-"     \ }
+Plug 'alaviss/nim.nvim'
+" Plug 'zah/nim.vim'
+
 Plug 'prabirshrestha/asyncomplete.vim'
 
 " Julia
-Plug 'JuliaEditorSupport/julia-vim'
+" Plug 'JuliaEditorSupport/julia-vim'
 
 Plug 'jiangmiao/auto-pairs'
 Plug 'vim-syntastic/syntastic'
@@ -23,15 +19,19 @@ Plug 'zchee/deoplete-jedi'
 Plug 'itchyny/lightline.vim'
 Plug 'itchyny/vim-gitbranch'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'morhetz/gruvbox', {'as': 'gruvbox'}
+
+"" Theme
+" Plug 'morhetz/gruvbox', {'as': 'gruvbox'}
+Plug 'kaicataldo/material.vim', { 'branch': 'main'  }
 Plug 'sainnhe/gruvbox-material'
 
-" Plug 'preservim/nerdcommenter'
+Plug 'preservim/nerdcommenter'
 
 " Plug 'vim-airline/vim-airline'
 " Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
+
 " nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 " let g:LanguageClient_serverCommands = {
 " \   'nim': ['~/.nimble/bin/nimlsp'],
@@ -57,6 +57,9 @@ set ai
 set si
 set expandtab
 
+" Set mouse scroll
+set mouse=a
+
 " Show line number
 set number
 
@@ -74,7 +77,11 @@ set background=dark
 let g:gruvbox_material_background = 'hard'
 let g:gruv_material_palette = 'mix'
 " colorscheme gruvbox
+" colorscheme material
 colorscheme gruvbox-material
+
+highlight String guifg=#ffc805
+highlight Identifier guifg=#acacee
 
 " Always show the status line
 set laststatus=2
@@ -138,14 +145,12 @@ let g:lightline = {
       \ }
 
 " Mapping
-
+let mapleader=","
 map <F12> mzgg=G`z
 nmap <C-n> :NERDTreeTabsToggle<CR>
 nnoremap <S-Left> :tabprevious<CR>
 nnoremap <S-Right> :tabnext<CR>
 
-" nmap <C-!> <Leader>cc
-" vmap <C-!> <Leader>cc<CR>gv
-
-" nmap <C-!> <Plug>NERDCommenterToggle
-" vmap <C-!> <Plug>NERDCommenterToggle<CR>gv
+" nmap <C-m> <Plug>NERDCommenterToggle
+" nmap <C-m> :call NERDComment("n", "Toggle")<CR>
+" vmap <C-m> <Plug>NERDCommenterToggle<CR>gv
