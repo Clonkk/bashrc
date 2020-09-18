@@ -15,6 +15,7 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tpope/vim-fugitive'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'zchee/deoplete-jedi'
+Plug 'dense-analysis/ale'
 
 Plug 'itchyny/lightline.vim'
 Plug 'itchyny/vim-gitbranch'
@@ -82,6 +83,7 @@ colorscheme gruvbox-material
 
 highlight String guifg=#ffc805
 highlight Identifier guifg=#acacee
+highlight Error guibg=#e30048
 
 " Always show the status line
 set laststatus=2
@@ -130,6 +132,25 @@ let g:deoplete#enable_at_startup = 1
 let g:better_whitespace_enabled=1
 
 let g:strip_whitespace_on_save=1
+
+let g:ale_linters = {
+      \   'nim': ['nimlsp', 'nimcheck'],
+      \}
+let g:ale_fixers = {
+      \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+      \   'nim': ['nimpretty'],
+      \}
+let g:ale_linters_explicit = 1
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 1
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_fix_on_save = 1
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '>>'
+highlight ALEErrorSign guifg=Red
+highlight ALEWarningSign guifg=Yellow
+
 let g:lightline = {
       \ 'colorscheme': 'solarized dark',
       \ }
