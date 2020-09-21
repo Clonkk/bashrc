@@ -6,7 +6,7 @@ Plug 'alaviss/nim.nvim'
 Plug 'prabirshrestha/asyncomplete.vim'
 
 " Julia
-" Plug 'JuliaEditorSupport/julia-vim'
+Plug 'JuliaEditorSupport/julia-vim'
 
 Plug 'jiangmiao/auto-pairs'
 Plug 'vim-syntastic/syntastic'
@@ -83,7 +83,7 @@ colorscheme gruvbox-material
 
 highlight String guifg=#ffc805
 highlight Identifier guifg=#acacee
-highlight Error guibg=#e30048
+highlight link nimSugModule NONE
 
 " Always show the status line
 set laststatus=2
@@ -134,7 +134,7 @@ let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 
 let g:ale_linters = {
-      \   'nim': ['nimlsp', 'nimcheck'],
+      \   'nim': ['nimlsp'],
       \}
 let g:ale_fixers = {
       \   '*': ['remove_trailing_lines', 'trim_whitespace'],
@@ -147,7 +147,7 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
 let g:ale_fix_on_save = 1
 let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '>>'
+let g:ale_sign_warning = '>'
 highlight ALEErrorSign guifg=Red
 highlight ALEWarningSign guifg=Yellow
 
