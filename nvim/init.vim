@@ -20,6 +20,7 @@ Plug 'dense-analysis/ale'
 Plug 'itchyny/lightline.vim'
 Plug 'itchyny/vim-gitbranch'
 Plug 'ntpeters/vim-better-whitespace'
+Plug 'airblade/vim-gitgutter'
 
 "" Theme
 " Plug 'morhetz/gruvbox', {'as': 'gruvbox'}
@@ -148,6 +149,7 @@ let g:ale_lint_on_insert_leave = 0
 let g:ale_fix_on_save = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '>'
+
 highlight ALEErrorSign guifg=Red
 highlight ALEWarningSign guifg=Yellow
 
@@ -165,6 +167,12 @@ let g:lightline = {
       \ },
       \ }
 
+let g:gitgutter_enabled = 1
+let g:gitgutter_highlight_lines = 1
+" ?? Is this a good idea
+let g:gitgutter_async = 0
+set updatetime=100
+
 " Mapping
 let mapleader=","
 map <F12> mzgg=G`z
@@ -173,5 +181,6 @@ nnoremap <S-Left> :tabprevious<CR>
 nnoremap <S-Right> :tabnext<CR>
 
 " nmap <C-m> <Plug>NERDCommenterToggle
-" nmap <C-m> :call NERDComment("n", "Toggle")<CR>
-" vmap <C-m> <Plug>NERDCommenterToggle<CR>gv
+nmap <C-m> :call NERDComment("n", "Toggle")<CR>
+vmap <C-m> :call NERDComment("n", "Toggle")<CR>gv
+" vmap <Plug>NERDCommenterToggle<CR>gv
