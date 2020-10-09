@@ -34,11 +34,6 @@ Plug 'preservim/nerdcommenter'
 
 call plug#end()
 
-" nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-" let g:LanguageClient_serverCommands = {
-" \   'nim': ['~/.nimble/bin/nimlsp'],
-" \ }
-
 au User asyncomplete_setup call asyncomplete#register_source({
     \ 'name': 'nim',
     \ 'whitelist': ['nim'],
@@ -137,10 +132,13 @@ let g:strip_whitespace_on_save=1
 let g:ale_linters = {
       \   'nim': ['nimlsp'],
       \}
+
 let g:ale_fixers = {
       \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-      \   'nim': ['nimpretty'],
       \}
+" Commented out for now
+" \   'nim': ['nimpretty'],
+"
 let g:ale_linters_explicit = 1
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
@@ -167,10 +165,10 @@ let g:lightline = {
       \ },
       \ }
 
-let g:gitgutter_enabled = 1
-let g:gitgutter_highlight_lines = 1
-" ?? Is this a good idea
+let g:gitgutter_enabled = 0
+let g:gitgutter_highlight_lines = 0
 let g:gitgutter_async = 0
+let g:gitgutter_preview_win_floating = 1
 set updatetime=100
 
 " Mapping
@@ -181,6 +179,6 @@ nnoremap <S-Left> :tabprevious<CR>
 nnoremap <S-Right> :tabnext<CR>
 
 " nmap <C-m> <Plug>NERDCommenterToggle
-nmap <C-m> :call NERDComment("n", "Toggle")<CR>
-vmap <C-m> :call NERDComment("n", "Toggle")<CR>gv
+" nmap <C-m> :call NERDComment("n", "Toggle")<CR>
+" vmap <C-m> :call NERDComment("n", "Toggle")<CR>gv
 " vmap <Plug>NERDCommenterToggle<CR>gv
