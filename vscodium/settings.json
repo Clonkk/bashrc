@@ -1,0 +1,50 @@
+{
+    "workbench.iconTheme": "material-icon-theme",
+    "files.associations": {
+        "*.m": "matlab"
+    },
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\wsl.exe",
+    // "python.pythonPath": "C:\\Users\\Regis\\anaconda3\\envs\\DeepColorDev\\python.exe",
+    "terminal.integrated.windowsEnableConpty": false,
+    "remote.SSH.remotePlatform": {
+        "Labo": "windows",
+        "LaboWSL": "linux"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "C_Cpp.updateChannel": "Insiders",
+    // "julia.enableTelemetry": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "terminal.integrated.automationShell.linux": "",
+    "terminal.integrated.fontFamily": "",
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontWeight": "normal",
+    "terminal.integrated.fontWeightBold": "normal",
+    "terminal.integrated.letterSpacing": 0,
+
+    "editor.fontLigatures": true,
+    "python.terminal.activateEnvironment": false,
+    "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
+    "vscode-neovim.useWSL": true,
+    "workbench.editor.highlightModifiedTabs": true,
+    "editor.semanticHighlighting.enabled": true,
+    "nim.nimprettyMaxLineLen": 120,
+    "editor.tabCompletion": "on",
+    "editor.tabSize": 2,
+    "workbench.colorTheme": "One Monokai",
+    "editor.trimAutoWhitespace": true,
+    "zenMode.hideTabs": false,
+    "zenMode.centerLayout": false,
+    "editor.occurrencesHighlight": true,
+    "editor.selectionHighlight": true,
+    "workbench.colorCustomizations": {
+        "editor.selectionHighlightBackground": "#0000", // similar selection
+        "editor.selectionHighlightBorder": "#797979",
+        "editorBracketMatch.background": "#0000",
+        "editorBracketMatch.border": "#f8f8f8",// brackets
+    },
+    "sync.autoUpload": true,
+    "http.proxyAuthorization": null
+}
