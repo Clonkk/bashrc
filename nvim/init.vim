@@ -3,21 +3,27 @@ call plug#begin()
 Plug 'alaviss/nim.nvim'
 " Plug 'zah/nim.vim'
 
+Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 " Julia
-Plug 'JuliaEditorSupport/julia-vim'
+" Plug 'JuliaEditorSupport/julia-vim'
+" Python
+Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 
-Plug 'jiangmiao/auto-pairs'
-Plug 'vim-syntastic/syntastic'
+" Nerd tree
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tpope/vim-fugitive'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'zchee/deoplete-jedi'
+
+" Analysis
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'zchee/deoplete-jedi'
 Plug 'dense-analysis/ale'
 
-Plug 'itchyny/lightline.vim'
+" Line & git
 Plug 'itchyny/vim-gitbranch'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'airblade/vim-gitgutter'
@@ -27,10 +33,15 @@ Plug 'airblade/vim-gitgutter'
 Plug 'kaicataldo/material.vim', { 'branch': 'main'  }
 Plug 'sainnhe/gruvbox-material'
 
+" Syntax
+" Plug 'jiangmiao/auto-pairs'
+" Plug 'vim-syntastic/syntastic'
+Plug 'cohama/lexima.vim'
 Plug 'preservim/nerdcommenter'
+Plug 'nathanaelkane/vim-indent-guides'
 
-" Plug 'vim-airline/vim-airline'
-" Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
 
@@ -41,7 +52,6 @@ au User asyncomplete_setup call asyncomplete#register_source({
     \ })
 
 filetype plugin indent on    " required
-
 set hlsearch
 set incsearch
 set showmatch
@@ -77,7 +87,7 @@ let g:gruv_material_palette = 'mix'
 " colorscheme material
 colorscheme gruvbox-material
 
-highlight String guifg=#ffc805
+highlight String guifg=#f8b015
 highlight Identifier guifg=#acacee
 highlight link nimSugModule NONE
 
@@ -90,8 +100,16 @@ highlight ColorColumn ctermbg=darkgray
 autocmd BufWritePre * StripWhitespace
 set list
 "set listchars=tab:▸·
-",space:·
+
+au BufNewFile,BufRead *.py
+    \ set expandtab       " replace tabs with spaces
+    \ set autoindent      " copy indent when starting a new line
+    \ set tabstop=4
+    \ set softtabstop=4
+    \ set shiftwidth=4
+
 highlight StrangeWhitespace guibg=Red ctermbg=Red
+let g:indent_guides_enable_on_vim_startup = 1
 let g:indentLine_enabled = 1
 let g:indentLine_setColors = 1
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
@@ -122,63 +140,84 @@ let g:NERDToggleCheckAllLines = 1
 
 " Use compact syntax for prettified multi-line comments
 let g:NERDCompactSexyComs = 1
-
 let g:deoplete#enable_at_startup = 1
-
 let g:better_whitespace_enabled=1
-
 let g:strip_whitespace_on_save=1
 
-let g:ale_linters = {
-      \   'nim': ['nimlsp'],
-      \}
+let s:nimlspexecutable = "nimlsp"
+let g:lsp_log_verbose = 1
+let g:lsp_log_file = expand('/tmp/vim-lsp.log')
 
+let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
+let g:asyncomplete_auto_popup = 1
+
+if has('win32') || has('win64')
+   let s:nimlspexecutable = "nimlsp.cmd"
+   " Windows has no /tmp directory, but has $TEMP environment variable
+   let g:lsp_log_file = expand('$TEMP/vim-lsp.log')
+   let g:asyncomplete_log_file = expand('$TEMP/asyncomplete.log')
+endif
+
+if executable(s:nimlspexecutable)
+   au User lsp_setup call lsp#register_server({
+   \ 'name': 'nimlsp',
+   \ 'cmd': {server_info->[s:nimlspexecutable]},
+   \ 'whitelist': ['nim'],
+   \ })
+endif
+
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Linter & Fixers
+let g:ale_linters = {
+      \   'nim': ['nimlsp', 'nimcheck'],
+      \   'python': ['flake8, pylint'],
+      \}
 let g:ale_fixers = {
       \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+      \   'nim': ['nimpretty'],
+      \   'python': ['yapf'],
       \}
-" Commented out for now
-" \   'nim': ['nimpretty'],
-"
+
+call ale#Set('python_flake8_options', '--max-line-length=120')
+call ale#Set('nim_nimpretty_options', '--maxLineLen:120')
 let g:ale_linters_explicit = 1
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
-let g:ale_fix_on_save = 1
+let g:ale_lint_on_save = 1
+let g:ale_fix_on_save = 0
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '>'
 
 highlight ALEErrorSign guifg=Red
 highlight ALEWarningSign guifg=Yellow
 
-let g:lightline = {
-      \ 'colorscheme': 'solarized dark',
-      \ }
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'FugitiveHead'
-      \ },
-      \ }
+let g:airline_theme='wombat'
+let g:airline_solarized_bg='dark'
 
+" git_gutter
 let g:gitgutter_enabled = 0
 let g:gitgutter_highlight_lines = 0
 let g:gitgutter_async = 0
-let g:gitgutter_preview_win_floating = 1
+let g:gitgutter_preview_win_floating = 0
 set updatetime=100
 
 " Mapping
 let mapleader=","
-map <F12> mzgg=G`z
+nmap <F12> <Plug>(ale_fix)
 nmap <C-n> :NERDTreeTabsToggle<CR>
 nnoremap <S-Left> :tabprevious<CR>
 nnoremap <S-Right> :tabnext<CR>
 
-" nmap <C-m> <Plug>NERDCommenterToggle
-" nmap <C-m> :call NERDComment("n", "Toggle")<CR>
-" vmap <C-m> :call NERDComment("n", "Toggle")<CR>gv
-" vmap <Plug>NERDCommenterToggle<CR>gv
