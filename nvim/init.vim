@@ -3,16 +3,11 @@ call plug#begin()
 Plug 'alaviss/nim.nvim'
 " Plug 'zah/nim.vim'
 
-Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
-
-" Julia
-" Plug 'JuliaEditorSupport/julia-vim'
-
-" Python
-" Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+Plug 'prabirshrestha/vim-lsp'
+" Alternative
+" Plug 'neovim/nvim-lspconfig'
 
 " Nerd tree
 Plug 'scrooloose/nerdtree'
@@ -46,29 +41,19 @@ Plug 'tpope/vim-fugitive'
 " Plug 'bling/vim-bufferline'
 
 call plug#end()
-
-au User asyncomplete_setup call asyncomplete#register_source({
-    \ 'name': 'nim',
-    \ 'whitelist': ['nim'],
-    \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
-    \ })
-
 filetype plugin indent on    " required
 set hlsearch
 set incsearch
 set showmatch
 set lazyredraw          " redraw only when we need to.
-
 "Classic tabs / space conf
 set tabstop=2
 set shiftwidth=2
 set ai
 set si
 set expandtab
-
 " Set mouse scroll
 set mouse=a
-
 " Show line number
 set number
 set relativenumber
@@ -78,6 +63,50 @@ set smartcase
 set visualbell           " don't beep
 set noerrorbells         " don't beep
 
+"" LSP SETUP
+au User asyncomplete_setup call asyncomplete#register_source({
+    \ 'name': 'nim',
+    \ 'whitelist': ['nim'],
+    \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
+    \ })
+
+let g:lsp_log_verbose = 1
+let g:lsp_log_file = expand('/tmp/vim-lsp.log')
+let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
+let g:asyncomplete_auto_popup = 1
+
+let s:nimlspexecutable = "nimlsp"
+if has('win32') || has('win64')
+   let s:nimlspexecutable = "nimlsp.cmd"
+   " Windows has no /tmp directory, but has $TEMP environment variable
+   let g:lsp_log_file = expand('$TEMP/vim-lsp.log')
+   let g:asyncomplete_log_file = expand('$TEMP/asyncomplete.log')
+endif
+
+if executable(s:nimlspexecutable)
+   au User lsp_setup call lsp#register_server({
+   \ 'name': 'nimlsp',
+   \ 'cmd': {server_info->[s:nimlspexecutable]},
+   \ 'whitelist': ['nim'],
+   \ })
+endif
+
+" Function setup for nvim-lspconfig
+" lua << EOF
+" local lspconfig = require("lspconfig")
+" lspconfig.nimls.setup {
+"   default_config = {
+"     cmd = { "nimlsp"  };
+"     filetypes = { "nim"  };
+"     settings = {
+"       nim = {
+"         nimprettyMaxLineLen = 120;
+"       }
+"     }
+"   }
+" }
+" EOF
+"
 " Theme
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
@@ -129,27 +158,6 @@ let g:NERDCompactSexyComs = 1
 let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 let g:strip_whitespace_confirm=0
-
-let s:nimlspexecutable = "nimlsp"
-let g:lsp_log_verbose = 1
-let g:lsp_log_file = expand('/tmp/vim-lsp.log')
-let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
-let g:asyncomplete_auto_popup = 1
-
-if has('win32') || has('win64')
-   let s:nimlspexecutable = "nimlsp.cmd"
-   " Windows has no /tmp directory, but has $TEMP environment variable
-   let g:lsp_log_file = expand('$TEMP/vim-lsp.log')
-   let g:asyncomplete_log_file = expand('$TEMP/asyncomplete.log')
-endif
-
-if executable(s:nimlspexecutable)
-   au User lsp_setup call lsp#register_server({
-   \ 'name': 'nimlsp',
-   \ 'cmd': {server_info->[s:nimlspexecutable]},
-   \ 'whitelist': ['nim'],
-   \ })
-endif
 
 " Linter & Fixers
 let g:deoplete#enable_at_startup = 1
