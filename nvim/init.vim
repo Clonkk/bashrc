@@ -1,22 +1,24 @@
 call plug#begin()
 " Nim
 Plug 'alaviss/nim.nvim'
-" Plug 'zah/nim.vim'
+" Plug 'dense-analysis/ale'
 
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'prabirshrestha/vim-lsp'
-" Alternative
+" LSP
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Plug 'prabirshrestha/vim-lsp'
+" LSP Alternative
 " Plug 'neovim/nvim-lspconfig'
+" Analysis
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'zchee/deoplete-jedi'
+
+" COC
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Nerd tree
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
-
-" Analysis
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'zchee/deoplete-jedi'
-Plug 'dense-analysis/ale'
 
 "" Theme
 " Plug 'morhetz/gruvbox', {'as': 'gruvbox'}
@@ -31,14 +33,12 @@ Plug 'preservim/nerdcommenter'
 
 " Better Visual Guide
 Plug 'Chiel92/vim-autoformat'
-" Plug 'Yggdroot/indentLine'
 Plug 'nathanaelkane/vim-indent-guides'
 
 " Status line
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
-" Plug 'bling/vim-bufferline'
 
 call plug#end()
 filetype plugin indent on    " required
@@ -64,32 +64,32 @@ set visualbell           " don't beep
 set noerrorbells         " don't beep
 
 "" LSP SETUP
-au User asyncomplete_setup call asyncomplete#register_source({
-    \ 'name': 'nim',
-    \ 'whitelist': ['nim'],
-    \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
-    \ })
-
-let g:lsp_log_verbose = 1
-let g:lsp_log_file = expand('/tmp/vim-lsp.log')
-let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
-let g:asyncomplete_auto_popup = 1
-
-let s:nimlspexecutable = "nimlsp"
-if has('win32') || has('win64')
-   let s:nimlspexecutable = "nimlsp.cmd"
-   " Windows has no /tmp directory, but has $TEMP environment variable
-   let g:lsp_log_file = expand('$TEMP/vim-lsp.log')
-   let g:asyncomplete_log_file = expand('$TEMP/asyncomplete.log')
-endif
-
-if executable(s:nimlspexecutable)
-   au User lsp_setup call lsp#register_server({
-   \ 'name': 'nimlsp',
-   \ 'cmd': {server_info->[s:nimlspexecutable]},
-   \ 'whitelist': ['nim'],
-   \ })
-endif
+" au User asyncomplete_setup call asyncomplete#register_source({
+"     \ 'name': 'nim',
+"     \ 'whitelist': ['nim'],
+"     \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
+"     \ })
+"
+" let g:lsp_log_verbose = 1
+" let g:lsp_log_file = expand('/tmp/vim-lsp.log')
+" let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
+" let g:asyncomplete_auto_popup = 1
+"
+" let s:nimlspexecutable = "nimlsp"
+" if has('win32') || has('win64')
+"    let s:nimlspexecutable = "nimlsp.cmd"
+"    " Windows has no /tmp directory, but has $TEMP environment variable
+"    let g:lsp_log_file = expand('$TEMP/vim-lsp.log')
+"    let g:asyncomplete_log_file = expand('$TEMP/asyncomplete.log')
+" endif
+"
+" if executable(s:nimlspexecutable)
+"    au User lsp_setup call lsp#register_server({
+"    \ 'name': 'nimlsp',
+"    \ 'cmd': {server_info->[s:nimlspexecutable]},
+"    \ 'whitelist': ['nim'],
+"    \ })
+" endif
 
 " Function setup for nvim-lspconfig
 " lua << EOF
@@ -107,6 +107,60 @@ endif
 " }
 " EOF
 "
+" Linter & Fixers
+" let g:deoplete#enable_at_startup = 1
+" let g:ale_linters = {
+"       \   'nim': ['nimcheck'],
+"       \   'python': ['flake8'],
+"       \}
+"
+" let g:ale_fixers = {
+"       \   'nim': ['nimpretty'],
+"       \   'python': ['autopep8', 'yapf'],
+"       \}
+"
+" call ale#Set('python_flake8_options', '--max-line-length=120')
+" call ale#Set('nim_nimpretty_options', '--maxLineLen:120')
+" let g:ale_enabled = 0
+" let g:ale_disable_lsp = 1
+" let g:ale_warn_about_trailing_whitespace = 0
+" let g:ale_linters_explicit = 1
+" let g:ale_set_loclist = 1
+" let g:ale_open_list = 0
+" let g:ale_set_quickfix = 1
+" let g:ale_completion_enabled = 1
+
+" let g:ale_lint_on_text_changed = 'always'
+" let g:ale_lint_on_save = 1
+" let g:ale_lint_on_enter = 1
+" let g:ale_lint_on_insert_leave = 1
+" let g:ale_lint_on_filetype_changed = 1
+" let g:ale_lint_delay = 100
+" let g:ale_list_window_size = 5
+" let g:ale_fix_on_save = 0
+
+let g:ale_sign_error = '▶'
+let g:ale_sign_warning = '>'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_error_str = 'E'
+" let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_echo_msg_format = '[%severity%] %s '
+
+highlight ALEErrorSign guifg=Red
+highlight ALEWarningSign guifg=Yellow
+
+" Coc
+let g:coc_global_extensions = [
+\ 'coc-json',
+\ 'coc-markdownlint',
+\ 'coc-vimlsp',
+\ 'coc-tabnine',
+\ 'coc-git',
+\ 'coc-pairs',
+\ 'coc-highlight',
+\ 'coc-lists',
+\ ]
+
 " Theme
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
@@ -114,6 +168,7 @@ syntax enable
 set background=dark
 let g:gruvbox_material_background = 'hard'
 let g:gruv_material_palette = 'mix'
+
 " colorscheme gruvbox
 " colorscheme material
 colorscheme gruvbox-material
@@ -129,7 +184,9 @@ set clipboard+=unnamedplus
 highlight ColorColumn ctermbg=darkgray
 highlight StrangeWhitespace guibg=Red ctermbg=Red
 
+" indent
 let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_auto_colors = 1
 let g:indentLine_enabled = 1
 let g:indentLine_setColors = 1
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
@@ -138,6 +195,7 @@ hi DiffAdd          ctermbg=235  ctermfg=108  guibg=#262626 guifg=#87af87 cterm=
 hi DiffChange       ctermbg=235  ctermfg=103  guibg=#262626 guifg=#8787af cterm=reverse        gui=reverse
 hi DiffDelete       ctermbg=235  ctermfg=131  guibg=#262626 guifg=#af5f5f cterm=reverse        gui=reverse
 hi DiffText         ctermbg=235  ctermfg=208  guibg=#262626 guifg=#ff8700 cterm=reverse        gui=reverse
+
 let g:NERDTreeToggle = 1
 
 " Add spaces after comment delimiters by default
@@ -159,50 +217,12 @@ let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 let g:strip_whitespace_confirm=0
 
-" Linter & Fixers
-let g:deoplete#enable_at_startup = 1
-let g:ale_linters = {
-      \   'nim': ['nimcheck'],
-      \   'python': ['flake8'],
-      \}
-
-let g:ale_fixers = {
-      \   'nim': ['nimpretty'],
-      \   'python': ['autopep8', 'yapf'],
-      \}
-
-call ale#Set('python_flake8_options', '--max-line-length=120')
-call ale#Set('nim_nimpretty_options', '--maxLineLen:120')
-let g:ale_enabled = 1
-let g:ale_warn_about_trailing_whitespace = 0
-let g:ale_linters_explicit = 1
-let g:ale_set_loclist = 1
-let g:ale_open_list = 1
-let g:ale_set_quickfix = 0
-
-let g:ale_lint_on_text_changed = 'always'
-let g:ale_lint_on_save = 1
-let g:ale_lint_on_enter = 1
-let g:ale_lint_on_insert_leave = 1
-let g:ale_fix_on_save = 0
-let g:ale_lint_on_filetype_changed = 1
-let g:ale_lint_delay = 100
-let g:ale_list_window_size = 5
-
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '>'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-highlight ALEErrorSign guifg=Red
-highlight ALEWarningSign guifg=Yellow
-
 " Airline
-let g:airline#extensions#ale#enabled = 1
-let airline#extensions#ale#error_symbol = 'E:'
-let airline#extensions#ale#warning_symbol = 'W:'
 let g:airline#extensions#tabline#enabled = 1
-let airline#extensions#ale#show_line_numbers = 1
+let g:airline#extensions#ale#enabled = 1
+" let g:airline#extensions#ale#error_symbol = '[E]'
+" let g:airline#extensions#ale#warning_symbol = '[W]'
+" let g:airline#extensions#ale#show_line_numbers = 1
 let g:airline_left_sep = '▶'
 let g:airline_right_sep = '◀'
 let g:airline_theme='angr'
@@ -214,16 +234,41 @@ function! s:check_back_space() abort
     return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ asyncomplete#force_refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" inoremap <silent><expr> <c-space>
+"   \ pumvisible() ? "\<C-n>" :
+"   \ <SID>check_back_space() ? "\<TAB>" :
+"   \ asyncomplete#force_refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 " noremap <F3> :Autoformat<CR>
 let mapleader=","
 nmap <F12> <Plug>NimGoToDefVSplit
 nmap <C-n> :NERDTreeTabsToggle<CR>
-nmap <F4> <Plug>(ale_fix)
+" nmap <F4> <Plug>(ale_fix)
 nnoremap <S-Left> :tabprevious<CR>
 nnoremap <S-Right> :tabnext<CR>
+
+" coc function
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <silent><expr> <c-space> coc#refresh()
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" gh - get hint on whatever's under the cursor
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> gh :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
