@@ -3,13 +3,17 @@ call plug#begin()
 Plug 'alaviss/nim.nvim'
 Plug 'dense-analysis/ale'
 
+" Julia
+Plug 'JuliaEditorSupport/julia-vim'
+
 " LSP
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'prabirshrestha/vim-lsp'
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Plug 'prabirshrestha/vim-lsp'
+
 " Coc
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 
 " Nerd tree
 Plug 'scrooloose/nerdtree'
@@ -23,7 +27,7 @@ Plug 'sainnhe/gruvbox-material'
 " Syntax
 Plug 'itchyny/vim-gitbranch'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'cohama/lexima.vim'
+" Plug 'cohama/lexima.vim'
 Plug 'preservim/nerdcommenter'
 
 " Better Visual Guide
@@ -59,7 +63,7 @@ set smartcase
 set visualbell           " don't beep
 set noerrorbells         " don't beep
 " You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=500
+set updatetime=200
 
 " Theme
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -68,7 +72,6 @@ syntax enable
 set background=dark
 let g:gruvbox_material_background = 'hard'
 let g:gruv_material_palette = 'mix'
-
 " colorscheme gruvbox
 " colorscheme material
 colorscheme gruvbox-material
@@ -87,9 +90,6 @@ highlight StrangeWhitespace guibg=Red ctermbg=Red
 " indent
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_auto_colors = 1
-let g:indentLine_enabled = 1
-let g:indentLine_setColors = 1
-let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 
 hi DiffAdd          ctermbg=235  ctermfg=108  guibg=#262626 guifg=#87af87 cterm=reverse        gui=reverse
 hi DiffChange       ctermbg=235  ctermfg=103  guibg=#262626 guifg=#8787af cterm=reverse        gui=reverse
@@ -97,7 +97,6 @@ hi DiffDelete       ctermbg=235  ctermfg=131  guibg=#262626 guifg=#af5f5f cterm=
 hi DiffText         ctermbg=235  ctermfg=208  guibg=#262626 guifg=#ff8700 cterm=reverse        gui=reverse
 
 let g:NERDTreeToggle = 1
-
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
 " Align line-wise comment delimiters flush left instead of following code indentation
@@ -131,53 +130,6 @@ let g:airline_right_sep = '◀'
 let g:airline_theme='angr'
 let g:airline_solarized_bg='dark'
 
-" Mapping
-let mapleader=","
-nmap <F12> <Plug>NimGoToDefVSplit
-nmap <C-n> :NERDTreeTabsToggle<CR>
-nnoremap <S-Left> :tabprevious<CR>
-nnoremap <S-Right> :tabnext<CR>
-noremap <F3> :Autoformat<CR>
-nmap <F4> :Autoformat <Plug>(ale_fix)<CR>
-
-"" LSP SETUP
-au User asyncomplete_setup call asyncomplete#register_source({
-    \ 'name': 'nim',
-    \ 'whitelist': ['nim'],
-    \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
-    \ })
-
-let g:lsp_log_verbose = 1
-let g:lsp_completion_documentation_enabled = 1
-let g:lsp_log_file = expand('/tmp/vim-lsp.log')
-let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
-let g:asyncomplete_auto_popup = 1
-
-let s:nimlspexecutable = "nimlsp"
-if has('win32') || has('win64')
-   let s:nimlspexecutable = "nimlsp.cmd"
-   " Windows has no /tmp directory, but has $TEMP environment variable
-   let g:lsp_log_file = expand('$TEMP/vim-lsp.log')
-   let g:asyncomplete_log_file = expand('$TEMP/asyncomplete.log')
-endif
-
-if executable(s:nimlspexecutable)
-   au User lsp_setup call lsp#register_server({
-   \ 'name': 'nimlsp',
-   \ 'cmd': {server_info->[s:nimlspexecutable]},
-   \ 'whitelist': ['nim'],
-   \ })
-endif
-
-if executable('pyls')
-    " pip install python-language-server
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'allowlist': ['python'],
-        \ })
-endif
-
 " Linter & Fixers
 let g:ale_linters = {
       \   'nim': ['nimcheck'],
@@ -186,7 +138,7 @@ let g:ale_linters = {
 
 let g:ale_fixers = {
       \   'nim': ['nimpretty'],
-      \   'python': ['autopep8', 'yapf'],
+      \   'python': ['autopep8'],
       \}
 call ale#Set('python_flake8_options', '--max-line-length=120')
 call ale#Set('nim_nimpretty_options', '--maxLineLen:120')
@@ -205,10 +157,10 @@ let g:ale_lint_on_save = 1
 let g:ale_lint_on_enter = 1
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_filetype_changed = 1
-let g:ale_lint_delay = 100
+let g:ale_lint_delay = 200
 let g:ale_list_window_size = 5
-let g:ale_fix_on_save = 0
 
+let g:ale_fix_on_save = 0
 let g:ale_sign_error = '✘'
 let g:ale_sign_warning = '➤'
 let g:ale_echo_msg_warning_str = 'W'
@@ -219,20 +171,107 @@ let g:ale_echo_msg_format = '[%severity%] %s '
 highlight ALEErrorSign guifg=Red
 highlight ALEWarningSign guifg=Yellow
 
+" Mapping
+let mapleader=","
+nmap <F12> <Plug>NimGoToDefVSplit
+nmap <C-n> :NERDTreeTabsToggle<CR>
+nnoremap <S-Left> :tabprevious<CR>
+nnoremap <S-Right> :tabnext<CR>
+noremap <F3> :Autoformat<CR>
+nmap <F4> <Plug>(ale_fix)<CR>
+
+"" LSP SETUP
+" au User asyncomplete_setup call asyncomplete#register_source({
+"     \ 'name': 'nim',
+"     \ 'whitelist': ['nim'],
+"     \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
+"     \ })
+"
+" let g:lsp_log_verbose = 1
+" let g:lsp_completion_documentation_enabled = 1
+" let g:lsp_log_file = expand('/tmp/vim-lsp.log')
+" let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
+" let g:asyncomplete_auto_popup = 1
+"
+" let s:nimlspexecutable = "nimlsp"
+" if has('win32') || has('win64')
+"    let s:nimlspexecutable = "nimlsp.cmd"
+"    " Windows has no /tmp directory, but has $TEMP environment variable
+"    let g:lsp_log_file = expand('$TEMP/vim-lsp.log')
+"    let g:asyncomplete_log_file = expand('$TEMP/asyncomplete.log')
+" endif
+"
+" if executable(s:nimlspexecutable)
+"    au User lsp_setup call lsp#register_server({
+"    \ 'name': 'nimlsp',
+"    \ 'cmd': {server_info->[s:nimlspexecutable]},
+"    \ 'whitelist': ['nim'],
+"    \ })
+" endif
+"
+" if executable('pyls')
+"     " pip install python-language-server
+"     au User lsp_setup call lsp#register_server({
+"         \ 'name': 'pyls',
+"         \ 'cmd': {server_info->['pyls']},
+"         \ 'allowlist': ['python'],
+"         \ })
+" endif
+"" function! s:check_back_space() abort
+"     let col = col('.') - 1
+"     return !col || getline('.')[col - 1]  =~ '\s'
+" endfunction
+"
+" "" LSP
+" inoremap <silent><expr> <TAB>
+"   \ pumvisible() ? "\<C-n>" :
+"   \ <SID>check_back_space() ? "\<TAB>" :
+"   \ asyncomplete#force_refresh()
+"
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" nmap <silent> K <plug>(lsp-hover)
+" nmap <silent> gh <plug>(lsp-hover)
+" nmap <buffer> <leader>rn <plug>(lsp-rename)
+" nmap <buffer> gr <plug>(lsp-references)
+autocmd CursorHold * silent call CocActionAsync('highlight')
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+" Formatting selected code.
+" xmap <leader>f  <Plug>(coc-format-selected)
+" nmap <leader>f  <Plug>(coc-format-selected)
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
 function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-"" LSP
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ asyncomplete#force_refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-nmap <silent> K <plug>(lsp-hover)
-nmap <silent> gh <plug>(lsp-hover)
-nmap <buffer> <leader>rn <plug>(lsp-rename)
-nmap <buffer> gr <plug>(lsp-references)
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
 
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> gh :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
