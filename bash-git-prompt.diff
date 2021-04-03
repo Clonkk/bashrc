@@ -39,8 +39,8 @@ index 1bf043f..de7e356 100644
 +	GIT_PROMPT_UPSTREAM="{ ${Magenta}_UPSTREAM_${ResetColor}}"
 +# •
 +# •
-+	GIT_PROMPT_START_USER="_LAST_COMMAND_INDICATOR_ ${BoldGreen}\u${ResetColor}${Yellow} \w${ResetColor}"
-+	GIT_PROMPT_START_ROOT="_LAST_COMMAND_INDICATOR_ ${BoldGreen}\u${ResetColor}${Yellow} \w${ResetColor}"
++	GIT_PROMPT_START_USER="_LAST_COMMAND_INDICATOR_ ${BoldGreen}\u${ResetColor}${BoldBlue} \w${ResetColor}"
++	GIT_PROMPT_START_ROOT="_LAST_COMMAND_INDICATOR_ ${BoldGreen}\u${ResetColor}${BoldBlue} \w${ResetColor}"
 +	GIT_PROMPT_END_USER="$ "
 +	GIT_PROMPT_END_ROOT="# "
 +
