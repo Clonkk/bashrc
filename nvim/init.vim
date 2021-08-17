@@ -17,14 +17,13 @@ Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh' }
 " Coc
 "Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 " Deoplete
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
 
 " Nerd tree
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'preservim/nerdcommenter'
 Plug 'jiangmiao/auto-pairs'
 Plug 'airblade/vim-gitgutter'
@@ -51,6 +50,7 @@ endif
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
+
 call plug#end()
 
 filetype plugin indent on    " required
@@ -76,11 +76,10 @@ set visualbell " don't beep
 set noerrorbells " don't beep
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=200
-set cmdheight=1
 set nobackup
 set nowritebackup
 set foldlevelstart=99
-set signcolumn=number
+"set signcolumn=number
 
 " Theme
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -106,6 +105,9 @@ highlight link nimSugModule NONE
 set list
 set laststatus=2
 set clipboard+=unnamedplus
+"set cmdheight=1
+"set cmdheight&
+
 
 highlight ColorColumn ctermbg=darkgray
 highlight StrangeWhitespace guibg=Red ctermbg=Red
@@ -142,23 +144,20 @@ let g:strip_whitespace_confirm=0
 " Airline
 let g:airline#extensions#whitespace#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
-
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#ale#error_symbol = '✘'
 let g:airline#extensions#ale#warning_symbol = '➤'
 let g:airline#extensions#ale#show_line_numbers = 1
+let g:airline_powerline_fonts = 1
+let g:airline_highlighting_cache = 1
+"let g:airline_theme='apprentice'
+let g:airline_theme='distinguished'
 
-let g:airline_left_sep = '▶'
-let g:airline_right_sep = '◀'
-let g:airline_theme='miramare'
-let g:airline_solarized_bg='dark'
-"
 " Linter & Fixers
 let g:ale_linters = {
       \   'nim': ['nimcheck'],
       \   'python': ['flake8'],
       \}
-
 let g:ale_fixers = {
       \   'nim': ['nimpretty'],
       \   'python': ['autopep8'],
@@ -182,7 +181,7 @@ let g:ale_lint_on_enter = 0
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_filetype_changed = 1
 let g:ale_lint_delay = 100
-let g:ale_list_window_size = 5
+let g:ale_list_window_size = 4
 
 let g:ale_fix_on_save = 0
 let g:ale_sign_error = '✘'
