@@ -184,11 +184,12 @@ lvim.autocommands = {
     "CursorHold",
     {
       pattern = "*",
-      callback = function() vim.diagnostic.open_float() end,
+      callback = function() vim.diagnostic.open_float({scope="line"}) end,
     }
   }
 }
 
+vim.opt.updatetime=1500
 lvim.format_on_save.enabled = true
 lvim.format_on_save.pattern = { "*.nim", "*.py", "*.go" }
 -- vim.lsp.diagnostics.virtual_text = false 
