@@ -5,7 +5,7 @@
 -- Discord: https://discord.com/invite/Xb9B4Ny
 lvim.plugins = {
   { "lunarvim/colorschemes" },
-  { 
+  {
     "sainnhe/sonokai",
     lazy = false,
     priority = 1000,
@@ -74,8 +74,17 @@ lvim.plugins = {
     config = true, -- run require("neorg").setup()
   },
 }
+vim.opt.wrap = true -- wrap lines
 lvim.leader = ","
+-- remap end of line since $ is a PITA to reach on qwerty
+lvim.keys.normal_mode["]]"] = "$"
+lvim.keys.visual_mode["]]"] = "$"
+lvim.keys.normal_mode["[["] = "0"
+lvim.keys.visual_mode["[["] = "0"
+lvim.keys.normal_mode["'"] = "*"
+-- Use jj to escape insert mode
 lvim.keys.insert_mode["jj"] = "<esc>"
+
 -- lvim.colorscheme = "lunar"
 -- lvim.colorscheme = "habamax"
 -- lvim.colorscheme = "onenord"
@@ -92,3 +101,111 @@ lvim.keys.insert_mode["jj"] = "<esc>"
 -- lvim.colorscheme = "edge"
 -- lvim.colorscheme = "gruvbox-material"
 lvim.colorscheme = "sonokai"
+
+-- Switch between nimls or nim_langserver
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "nimls", "nim_langserver" })
+-- require'lspconfig'.nimls.setup{}
+require'lspconfig'.nim_langserver.setup{}
+
+local formatters = require "lvim.lsp.null-ls.formatters"
+
+-- Doesn't work
+-- local helpers = require("null-ls.helpers")
+-- local FORMATTING = require("null-ls.methods").internal.FORMATTING
+-- require("null-ls").register({
+--   --your custom sources go here
+--   helpers.make_builtin({
+--     name = "nph",
+--     meta = {
+--       url = "https://github.com/arnetheduck/nph",
+--       description = "A linter for Nim."
+--     },
+--     method = FORMATTING,
+--     filetypes = { "nim" },
+--     generator_opts = {
+--       command = "nph",
+--       args = {}, -- put any required arguments in this table
+--       to_stdin = false, -- instructs the command to ingest the file from STDIN (i.e. run the currently open buffer through the linter/formatter)
+--     },
+--     factory = helpers.formatter_factory,
+--   })
+-- })
+
+formatters.setup {
+  {
+    name = "black",
+    -- filetypes = { "python" },
+  },
+  {
+    name = "ruff",
+    filetypes = { "python" },
+  },
+  {
+    name = "goimports",
+    filetypes = { "go" },
+  },
+  -- {
+  --   name = "gofumpt",
+  --   filetypes = { "go" },
+  -- },
+  -- {
+  --   name = "nph",
+  --   filetypes = { "nim" }
+  -- }
+}
+local linters = require "lvim.lsp.null-ls.linters"
+linters.setup {
+  { name = "flake8" },
+  {
+    name = "shellcheck",
+    args = { "--severity", "warning" },
+  },
+  {
+    command = "golangci-lint",
+    filetypes = { "go" },
+  },
+}
+
+-- lvim.api.nvim_create_autocmd("CursorHold", {
+--   pattern = "*",
+--   callback = function() lvim.lsp.diagnostic.show_line_diagnostics({ show_header = false, border = 'single' }) end,
+-- })
+--
+local config = { -- your config
+    virtual_text = {prefix = '!'} ,
+    underline = true,
+    update_in_insert = true,
+    float = true,
+}
+vim.diagnostic.config(config)
+
+lvim.autocommands = {
+  {
+    "CursorHold",
+    {
+      pattern = "*",
+      callback = function() vim.diagnostic.open_float() end,
+    }
+  }
+}
+
+lvim.format_on_save.enabled = true
+lvim.format_on_save.pattern = { "*.nim", "*.py", "*.go" }
+-- vim.lsp.diagnostics.virtual_text = false 
+
+-- lvim.builtin.lualine.style = "lvim"
+-- no need to set style = "lvim"
+
+local components = require("lvim.core.lualine.components")
+lvim.builtin.lualine.sections.lualine_a = { components.mode }
+lvim.builtin.lualine.sections.lualine_b = { components.branch, components.diff, components.filename}
+lvim.builtin.lualine.sections.lualine_c = { components.diagnostics, }
+
+lvim.builtin.lualine.sections.lualine_x = { components.filetype }
+lvim.builtin.lualine.sections.lualine_y = { components.location }
+lvim.builtin.lualine.sections.lualine_z = { components.progress }
+
+
+
+-- lvim.keys.normal_mode["gt"] = ":BufferLineCycleNext<CR>"
+-- lvim.keys.normal_mode["gT"] = ":BufferLineCyclePrev<CR>"
