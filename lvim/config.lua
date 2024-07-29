@@ -75,7 +75,7 @@ lvim.plugins = {
   },
 }
 vim.opt.wrap = true -- wrap lines
-lvim.leader = ","
+lvim.leader = "space"
 -- remap end of line since $ is a PITA to reach on qwerty
 lvim.keys.normal_mode["]]"] = "$"
 lvim.keys.visual_mode["]]"] = "$"
@@ -166,11 +166,6 @@ linters.setup {
   },
 }
 
--- lvim.api.nvim_create_autocmd("CursorHold", {
---   pattern = "*",
---   callback = function() lvim.lsp.diagnostic.show_line_diagnostics({ show_header = false, border = 'single' }) end,
--- })
---
 local config = { -- your config
     virtual_text = {prefix = '!'} ,
     underline = true,
@@ -192,7 +187,6 @@ lvim.autocommands = {
 vim.opt.updatetime=1500
 lvim.format_on_save.enabled = true
 lvim.format_on_save.pattern = { "*.nim", "*.py", "*.go" }
--- vim.lsp.diagnostics.virtual_text = false 
 
 -- lvim.builtin.lualine.style = "lvim"
 -- no need to set style = "lvim"
@@ -206,7 +200,5 @@ lvim.builtin.lualine.sections.lualine_x = { components.filetype }
 lvim.builtin.lualine.sections.lualine_y = { components.location }
 lvim.builtin.lualine.sections.lualine_z = { components.progress }
 
-
-
--- lvim.keys.normal_mode["gt"] = ":BufferLineCycleNext<CR>"
--- lvim.keys.normal_mode["gT"] = ":BufferLineCyclePrev<CR>"
+lvim.keys.normal_mode["gt"] = ":BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["gT"] = ":BufferLineCyclePrev<CR>"
